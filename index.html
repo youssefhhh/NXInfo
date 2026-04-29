@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="NX Info.">
+    <meta name="theme-color" content="#000000">
+    <meta property="og:title" content="NX">
+    <meta property="og:description" content="NX Info.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <title>NX</title>
+
+    <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap');
+
+        :root {
+            --bg-start: #000000;
+            --bg-end: #0a0a0a;
+            --text: #e0e0e0;
+            --accent1: #b0b0b0;
+            --accent2: #ffffff;
+            --red: #e53935;
+            --red-soft: #ff6b6b;
+            --red-glow: rgba(229, 57, 53, 0.25);
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(255,255,255,0.06);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: transform 0.3s ease, color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, var(--bg-start), var(--bg-end));
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            perspective: 1500px;
+        }
+
+        .background-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -2;
+            opacity: 0.5;
+            filter: brightness(0.5) contrast(1.2);
+        }
+
+        .background-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.7));
+            z-index: -1;
+        }
+
+        .container {
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            border-radius: 30px;
+            padding: 50px;
+            text-align: center;
+            max-width: 900px;
+            width: 90%;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.7), 
+                        0 0 40px rgba(229,57,53,0.06);
+            transform: translateZ(100px) rotateX(5deg);
+            border: 1px solid rgba(229,57,53,0.12);
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateZ(100px) rotateX(5deg) translateY(0); }
+            50% { transform: translateZ(100px) rotateX(5deg) translateY(-15px); }
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .social-link {
+            color: var(--text);
+            font-size: 2.5rem;
+            text-decoration: none;
+            transition: all 0.4s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.1);
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .social-link img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+        }
+
+        .social-link:hover {
+            transform: scale(1.15) rotate(360deg);
+            color: var(--red-soft);
+            box-shadow: 0 0 25px var(--red-glow), 0 0 50px rgba(229,57,53,0.1);
+        }
+
+        .clock {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            margin-bottom: 30px;
+            text-shadow: 0 0 15px rgba(229,57,53,0.2), 
+                         0 0 25px rgba(229,57,53,0.1);
+            letter-spacing: 3px;
+            background: linear-gradient(to right, var(--red-soft), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .date {
+            font-size: 1rem;
+            opacity: 0.85;
+            margin-top: -15px;
+            margin-bottom: 25px;
+            letter-spacing: 1px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 40px;
+            gap: 16px;
+            user-select: none;
+        }
+
+        .control-btn {
+            background: rgba(255,255,255,0.12);
+            color: var(--text);
+            border: 1px solid var(--border);
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            cursor: pointer;
+            position: relative;
+            z-index: 2;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-2px);
+            color: var(--red-soft);
+            box-shadow: 0 15px 30px var(--red-glow);
+        }
+        .control-btn:focus-visible {
+            outline: 2px solid var(--accent2);
+            outline-offset: 2px;
+        }
+        .audio-fab {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            backdrop-filter: blur(12px);
+            background: rgba(255,255,255,0.12);
+            border: 1px solid var(--border);
+            box-shadow: 0 12px 28px rgba(0,0,0,0.5), 0 0 20px rgba(255,255,255,0.05);
+            z-index: 10600;
+        }
+        .audio-fab.active {
+            box-shadow: 0 0 0 10px rgba(229,57,53,0.08), 0 0 20px rgba(229,57,53,0.15);
+        }
+
+        .feedback-btn {
+            background-color: var(--accent1);
+            color: var(--text);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+        }
+
+        .feedback-btn:hover {
+            background-color: var(--red);
+            color: #ffffff;
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px var(--red-glow);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px;
+                width: 95%;
+            }
+
+            .social-links {
+                gap: 20px;
+            }
+
+            .clock {
+                font-size: 2.5rem;
+            }
+        }
+
+        .kissMyAss {
+            background: linear-gradient(135deg, var(--bg-start), var(--bg-end));
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10550;
+            transition: 0.5s;
+        }
+
+        .kissMyAss button {
+            border: none;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+        }
+        .kissMyAss .button-start {
+            opacity: 0;
+            transform: translateY(8px);
+            pointer-events: none;
+        }
+        .kissMyAss .button-start.show {
+            opacity: 1;
+            transform: none;
+            pointer-events: auto;
+        }
+        .enter-wrapper {
+            position: fixed;
+            bottom: 10%;
+            left: 50%;
+            transform: translateX(-50%) translateY(8px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            opacity: 0;
+            transition: opacity 0.6s ease, transform 0.4s ease;
+            z-index: 10560;
+        }
+        .enter-wrapper.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        .kissMyAss .button-start {
+            display: inline-flex;
+            align-items: center;
+            gap: 14px;
+            padding: 18px 48px;
+            border-radius: 60px;
+            position: relative;
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+            font-size: 1rem;
+            letter-spacing: 4px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            overflow: hidden;
+        }
+        .kissMyAss .button-start::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 60px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.06), transparent);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .kissMyAss .button-start:hover {
+            border-color: rgba(229, 57, 53, 0.4);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 0 30px var(--red-glow);
+            transform: translateY(-3px);
+            letter-spacing: 6px;
+        }
+        .kissMyAss .button-start:hover::before {
+            opacity: 1;
+        }
+        .kissMyAss .button-start:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        }
+        .kissMyAss .button-start .btn-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            opacity: 0.7;
+            transition: all 0.4s ease;
+        }
+        .kissMyAss .button-start:hover .btn-icon {
+            opacity: 1;
+            transform: translateX(3px);
+        }
+        .kissMyAss .button-start .btn-text {
+            text-transform: uppercase;
+            letter-spacing: inherit;
+            font-weight: 400;
+        }
+        .enter-wrapper .hint {
+            font-size: 0.75rem;
+            opacity: 0.4;
+            color: var(--red-soft);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            animation: hintPulse 3s ease-in-out infinite;
+        }
+        @keyframes hintPulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+            padding: 40px;
+        }
+        .brand {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.2rem;
+            letter-spacing: 4px;
+            background: linear-gradient(to right, var(--red), var(--red-soft));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            opacity: 0;
+            transform: translateY(12px) scale(0.98);
+            filter: blur(6px);
+        }
+        .brand.show {
+            animation: text-reveal 800ms ease-out forwards;
+        }
+        .roles-rotator {
+            margin-top: 12px;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            color: var(--text);
+            opacity: 0;
+            transform: translateY(12px) scale(0.98);
+            filter: blur(6px);
+            background: linear-gradient(to right, var(--red-soft), #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .roles-rotator.show {
+            animation: text-reveal 900ms ease-out 200ms forwards;
+        }
+
+        #visitorCount {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            color: var(--text);
+            font-size: 1.2rem;
+            font-family: 'Orbitron', sans-serif;
+            transition: all 0.3s ease;
+            cursor: default;
+            position: relative;
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        #visitorCount::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 20px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
+            opacity: 0;
+            z-index: -1;
+            transition: opacity 0.5s ease;
+            pointer-events: none;
+        }
+
+        #visitorCount:hover::before {
+            opacity: 1;
+        }
+
+        #visitorCount svg {
+            width: 24px;
+            height: 24px;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            filter: drop-shadow(0 0 5px rgba(229,57,53,0.3));
+        }
+
+        #visitorCount:hover svg {
+            transform: scale(1.2) rotate(15deg);
+            filter: drop-shadow(0 0 8px rgba(229,57,53,0.5));
+        }
+
+        #visitorCount svg path {
+            fill: url(#eyeGradient);
+        }
+
+        #visitorCount .count {
+            font-weight: 700;
+            letter-spacing: 1px;
+            background: linear-gradient(to right, var(--red-soft), #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+            padding: 0 5px;
+        }
+
+        #visitorCount .count::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background: linear-gradient(to right, var(--red), var(--red-soft));
+            transition: width 0.3s ease;
+        }
+
+        #visitorCount:hover .count::after {
+            width: 100%;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.7; }
+            50% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.7; }
+        }
+
+        .visitor-ping {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            border-radius: 20px;
+            background: radial-gradient(circle, rgba(229,57,53,0.1) 0%, rgba(229,57,53,0) 70%);
+            animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        @keyframes ping {
+            0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.3; }
+            70%, 100% { transform: translate(-50%, -50%) scale(1.7); opacity: 0; }
+        }
+        @keyframes text-reveal {
+            0% { opacity: 0; filter: blur(8px); transform: translateY(12px) scale(0.98); }
+            100% { opacity: 1; filter: blur(0); transform: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="kissMyAss">
+        <div class="hero">
+            <h1 class="brand">NX GAMING</h1>
+            <div id="rolesRotator" class="roles-rotator" aria-live="polite"></div>
+        </div>
+        <div class="enter-wrapper">
+            <button class="button-start">
+                <span class="btn-icon"><i class="fa-solid fa-arrow-right-to-bracket"></i></span>
+                <span class="btn-text">ENTER</span>
+            </button>
+            <div class="hint">Press to enter</div>
+        </div>
+    </div>
+    <video class="background-video" id="background-video" loop>
+        <source src="1.mp4" type="video/mp4">
+    </video>
+    
+    <div class="background-overlay"></div>
+
+    <div class="container">
+
+        <div id="clock" class="clock">00:00:00</div>
+        <div id="date" class="date"></div>
+
+        
+        <div class="social-links">
+            <a href="https://discord.gg/nxgamingstore" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="Discord" title="Discord">
+                <i class="fab fa-discord"></i>
+            </a>
+            <a href="https://t.me/NxStoreofficial" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="Telegram" title="Telegram">
+                <i class="fab fa-telegram"></i>
+            </a>
+            <a href="https://www.tiktok.com/@nxtiktoktv" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="TikTok" title="TikTok">
+                <i class="fab fa-tiktok"></i>
+            </a>
+            <a href="https://youtube.com/@nx_tweaker?si=mGyI5xsjGhpKSShe" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="YouTube" title="YouTube">
+                <i class="fab fa-youtube"></i>
+            </a>
+            <a href="https://nxtweaks.online/" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="NXTweaker" title="NXTweaker - PC Optimization">
+                <i class="fas fa-globe"></i>
+            </a>
+        </div>
+
+
+
+    <audio id="backgroundMusic" loop>
+        <source src="https://cdn.discordapp.com/attachments/1133001504614252664/1162213280937418844/x2mate.com_-_-_Mostafa_Elnesr_-_ANA_Z3LTK_Official_Audio_128_kbps.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        let hour12 = true;
+        function updateClock() {
+            const now = new Date();
+            const clock = document.getElementById('clock');
+            const dateEl = document.getElementById('date');
+            clock.textContent = now.toLocaleTimeString([], { hour12 });
+            dateEl.textContent = now.toLocaleDateString([], { weekday: 'short', year: 'numeric', month: 'short', day: '2-digit' });
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const buttonStart = document.querySelector('.button-start');
+            const enterWrapper = document.querySelector('.enter-wrapper');
+            const kissMyAss = document.querySelector('.kissMyAss');
+            const backgroundVideo = document.getElementById('background-video');
+            const backgroundMusic = document.getElementById('backgroundMusic');
+            const audioToggle = document.getElementById('audioToggle');
+            const rolesEl = document.getElementById('rolesRotator');
+            const brandEl = document.querySelector('.brand');
+            const roles = [
+                'TWEAKER',
+                'PROGRAMER',
+                'PC FIXER',
+                'NX ESPORTS',
+                'OWNER NX TWEAKER',
+            ];
+            let idx = 0;
+            let rolesActive = true;
+            let rolesTimeout;
+            function scrambleTo(el, next) {
+                const chars = '!<>-_\\/[]{}—=+*^?#';
+                const len = next.length;
+                let reveal = 0;
+                return new Promise(resolve => {
+                    const t = setInterval(() => {
+                        let out = '';
+                        for (let i = 0; i < len; i++) {
+                            out += i < reveal ? next[i] : chars[Math.floor(Math.random() * chars.length)];
+                        }
+                        el.textContent = out;
+                        reveal++;
+                        if (reveal > len) {
+                            clearInterval(t);
+                            el.textContent = next;
+                            resolve();
+                        }
+                    }, 30);
+                });
+            }
+            async function cycleRoles() {
+                if (!rolesActive) return;
+                await scrambleTo(rolesEl, roles[idx]);
+                idx = (idx + 1) % roles.length;
+                rolesTimeout = setTimeout(cycleRoles, 1000);
+            }
+            cycleRoles();
+            requestAnimationFrame(() => {
+                brandEl.classList.add('show');
+                rolesEl.classList.add('show');
+            });
+
+            function showEnter() {
+                buttonStart.classList.add('show');
+                enterWrapper.classList.add('show');
+            }
+            setTimeout(showEnter, 2000);
+
+            buttonStart.addEventListener("click", function () {
+                kissMyAss.style.opacity = '0';
+                setTimeout(() => {
+                    kissMyAss.style.display = 'none'; 
+                }, 1000);
+                rolesActive = false;
+                clearTimeout(rolesTimeout);
+
+                backgroundVideo.style.display = 'block';
+                backgroundVideo.play();
+                backgroundVideo.muted = false;
+                backgroundMusic.muted = false;
+                backgroundMusic.play().catch(()=>{});
+                audioToggle.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
+                audioToggle.classList.add('active');
+            });
+
+            audioToggle.addEventListener('click', () => {
+                const nextMuted = !(backgroundMusic.muted || backgroundVideo.muted);
+                backgroundMusic.muted = nextMuted;
+                backgroundVideo.muted = nextMuted;
+                audioToggle.innerHTML = nextMuted
+                    ? '<i class="fa-solid fa-volume-xmark"></i>'
+                    : '<i class="fa-solid fa-volume-high"></i>';
+                audioToggle.classList.toggle('active', !nextMuted);
+            });
+
+            document.getElementById('clock').addEventListener('click', () => {
+                hour12 = !hour12;
+                updateClock();
+            });
+        });
+    </script>
+</body>
+</html>
